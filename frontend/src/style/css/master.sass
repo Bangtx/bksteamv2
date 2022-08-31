@@ -1,0 +1,39 @@
+@import './common.sass'
+
+.dragging-wrapper
+  display: flex
+  justify-content: space-around
+  flex-wrap: wrap
+  margin: 2px 0
+  background-color: #F4F8FB
+  border: 1px solid #CFD5DA
+
+.v-main
+  background-color: rgba(245, 250, 238, 0.81) !important
+  @include relative-fontsize
+
+.green-bg
+  background-color: rgba(245, 250, 238, 0.81) !important
+
+.margin-bottom
+  min-height: 100px
+  min-width: 100%
+  background-color: opacify(#E4E8EE, 0.53)
+
+.top-sheet
+  z-index: 1000
+  position: fixed
+  top: 0
+  left: 0
+  width: 100%
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2)
+
+.bold--text
+  font-weight: 600
+  font-color: #172B4D
+
+.rough-black
+  color: $rough-black
+
+.green-main
+  color: $green-main

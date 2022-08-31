@@ -1,0 +1,15 @@
+// export const AUTH = `${process.env.VUE_APP_API_URL_PRO}/auth/`
+export const AUTH = `/auth/`
+export const STUDENT = '/student/'
+export const CLASSROOM = '/classroom/'
+export const ROLLCALL = '/roll_call/'
+export const SCORE = '/score/'
+export const NOTIFICATION = '/notification/'
+export const TEACHER = '/teacher/'
+export const UNIT = '/unit/'
+export const HOME_WORK = '/home_work/'
+export const HOME_WORK_RESULT = '/home_work_result/'
+export const HOME_WORK_FILE = '/home_work_file/'
+export const HOME_WORK_FILE_RESULT = '/home_work_file_result/'
+export const SLIDE = '/slide/'
+export const SELF_LEARNING = '/self_learning/'

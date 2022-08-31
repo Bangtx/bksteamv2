@@ -1,0 +1,277 @@
+$color: (
+  "main-bg-color":          rgba(245, 250, 238, 0.72),
+  "main-dark-green-color": #389583,
+  "background-hover":       rgba(255, 255, 255, 0.9),
+  "text-color-dark": #47525E,
+  "text-dim":               rgba(0, 0, 0, 0.64),
+  "border-color":           rgba(0, 0, 0, 0.12),
+  "grey-bg-color":          rgba(0, 0, 0, 0.12),
+  "outline-border":         rgba(0, 0, 0, 0.25),
+  "white-opacity-12":       rgba(255, 255, 255, 0.12),
+  "text-color-light":       #ffffff,
+  "primary":                #689F38,
+  "expired":                #EAE9E9,
+  "claim-highlight":        #FC0000,
+  "amber":                  #FFBF00
+);
+
+$status-color: (
+  "canceled":        #A8A8A8,
+  "new":             #41BEB6,
+  "pending":         #354450,
+  "rejected":        #424242,
+  "confirming":      #e65100,
+  "confirmed":       #689f38,
+  "accepted":        #689f38,
+  "not_set":         rgba(0, 0, 0, 0.64)
+);
+
+$notification-types-color: (
+  "al_published":        cadetblue,
+  "product_published":             #689f38,
+  "order_modified":        lightcoral,
+  "payment_ticket_modified":     cornflowerblue,
+  "withdrawal_modified":       darkseagreen,
+);
+
+$claim-status-color: (
+    "canceled":        #A8A8A8,
+    "rejected":        #424242,
+    "claiming":        #f2791d,
+    "accepted":        #689f38,
+    "expired":         #a1a1a1
+);
+
+@mixin fab_style($width: 1280, $important: '!important') {
+    ::v-deep .fab-mode-wrapper {
+        $offsetTop: 72px;
+        $sidebar-width: 100;
+        @media (min-width: 960px) {
+            & > .v-btn, & > .v-speed-dial {
+                top: $offsetTop;
+            }
+            .v-btn + .v-speed-dial {
+                bottom: unset; // Require for the animation to start from correct position
+            }
+            // In two buttons mode, there will be a main button and a speed dial
+            &--two-buttons {
+                // The speed dial will be small, so need extra top
+                > .v-speed-dial {
+                    top: $offsetTop + 9px;
+                }
+                // The main button will need to be pushed to the left a bit
+                > .v-btn {
+                    right: 88px;
+                }
+            }
+            // These calculation make sure the fab buttons to appear inside
+            // the page's container width
+            & > .v-btn, & > .v-speed-dial {
+                right: calc((100vw - #{$sidebar-width}px - #{$width}px) / 2) #{$important};
+            }
+            &--two-buttons {
+                > .v-btn {
+                    right: calc((100vw - #{$sidebar-width}px - #{$width}px) / 2 + 60px) #{$important};
+                }
+            }
+        }
+        // If the page's container max-width + sidebar width is large than 960
+        // There will be a range of window size where above calculation return negative
+        // In this case, we need to fix the position of the fab buttons
+        @if ($width + $sidebar-width > 960) {
+            @media (min-width: 960px) and (max-width: #{$width + $sidebar-width}px) {
+                & > .v-btn, & > .v-speed-dial {
+                    right: 24px #{$important};
+                }
+                &--two-buttons {
+                    > .v-btn {
+                        right: 88px #{$important};
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
+@mixin common_color() {
+    .color-light-red {
+        background: #FFD2D0;
+    }
+    .color-amber {
+        background: #FFBF00;
+    }
+    .color-light-orange {
+        background: #FFDCC3;
+    }
+
+    .color-beige {
+        background: #FEFDC9;
+    }
+
+    .color-light-green {
+        background: #DCF0D3;
+    }
+
+    .color-light-blue {
+        background: #ABC4E9;
+    }
+
+    .color-light-purple {
+        background: #E3CAE4;
+    }
+
+    .color-light-pink {
+        background: #FFC6E0;
+    }
+
+    .color-red {
+        background: #FC0000;
+    }
+
+    .color-orange {
+        background: #FF7D00;
+    }
+
+    .color-yellow {
+        background: #FDF700;
+    }
+
+    .color-green {
+        background: #56C53C;
+    }
+
+    .color-blue {
+        background: #0062B6;
+    }
+
+    .color-purple {
+        background: #AF008E;
+    }
+
+    .color-pink {
+        background: #FF4DB7;
+    }
+
+    .color-dark-red {
+        background: #9E0000;
+    }
+
+    .color-brown {
+        background: #C96200;
+    }
+
+    .color-dark-yellow {
+        background: #CBC200;
+    }
+
+    .color-dark-green {
+        background: #2A7D21;
+    }
+
+    .color-dark-blue {
+        background: #003A75;
+    }
+
+    .color-dark-purple {
+        background: #71005A;
+    }
+
+    .color-dark-pink {
+        background: #71005A;
+    }
+
+    .color-white {
+        background: #ffffff;
+    }
+
+    .color-black {
+        background: #000000;
+    }
+
+    .color-mix-color {
+        background: url('data:image/png; base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApBAMAAABaTh3FAAAAIVBMVEUPaLAPaLA3Vm9vWVLkLINzvUsPaLBCQkLkLINzvUv+8DWa+E27AAAABnRSTlMQQHlwQEDx4NSQAAAACXBIWXMAAABIAAAASABGyWs+AAAANElEQVQoz2NgFIQBZRcYcGAQS4OB8g4YaBgVHUSi6uWYoIDBHKto5EwYKF8FAwtGRQePKACmJ7xb4gJaqgAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNi0xMS0wMlQwMjowMjoxMS0wNTowMNJe5kEAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTYtMTEtMDJUMDI6MDI6MTEtMDU6MDCjA179AAAAAElFTkSuQmCC') no-repeat;
+        background-size: contain;
+    }
+
+    .color-golden {
+        background: linear-gradient(135deg, #ca801f, #f1c540 40%, #ffe7a0 50%, #f1c540 60%, #ca801f);
+    }
+
+    .color-silver {
+        background: linear-gradient(135deg, #787878, #cfcfcf 40%, #e2e2e2 50%, #cfcfcf 60%, #787878);
+    }
+
+    .color-rainbow {
+        background: linear-gradient(135deg, #ea212c, #f38231 22%, #f38231 0, #fef035 51%, #1dc125 83%, #0e68af 96%, #592f8f);
+    }
+
+    .color-other {
+        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAMAAACfvvDEAAAAKlBMVEVHcEzJysrJysrJysrJysrJysrJysrJysrJysrJysrJysrJysrJysrJyspRm/8xAAAADXRSTlMAgMDwUCBsMOCQELCgRIM9BgAAAGZJREFUOMvtkVsOwCAIBAV8K/e/boUSm3qElvmayC6aGILjfIoEEE0zDtMOOMsZJGbOqrCM7yguo/ROZhlX1SqKWhez/kYXkSrtZNEkHLfLWVNtz1jXnw+NiFbuk8i0DK7Rf9v5KRfzLQN8OVXcjwAAAABJRU5ErkJggg==') no-repeat;
+        background-size: contain;
+        border: 1px solid #999;
+    }
+
+    .color-selection {
+        display: none;
+    }
+
+    .color-checked {
+        display: flex;
+    }
+    //font-size: 19px;
+
+    .color-checked.ic-dark {
+        color: #ffffff;
+    }
+
+    .color-checked.ic-light {
+        color: rgba(0, 0, 0, 0.81);
+    }
+}
+
+@mixin claim_info_status_color($prefix: '.claim-info-status') {
+    @each $_status, $_color in $claim-status-color {
+        #{$prefix}--#{$_status} {
+            background: $_color;
+            font-weight: 500;
+            color: #FFFFFF;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+    }
+}
+@mixin claim_status_color($prefix: '.claim-status') {
+    @each $_status, $_color in $claim-status-color {
+        #{$prefix}--#{$_status} {
+            color: $_color;
+            font-weight: 500;
+        }
+    }
+}
+
+@mixin notification_types_color($prefix: '.notification-types') {
+    @each $_type, $_color in $notification-types-color {
+        #{$prefix}--#{$_type} {
+            background-color: $_color;
+            border-color: $_color;
+        }
+    }
+}
+
+@mixin status_color($prefix: '.status') {
+    .status--invoiced, .status--paid, .status--accept, .status--fixed {
+        background: #689f38;
+        color: #FFFFFF;
+        padding: 0 4px;
+        font-weight: 500;
+        border-radius: 4px;
+    }
+
+    @each $_status, $_color in $status-color {
+        #{$prefix}--#{$_status} {
+            color: $_color;
+        }
+    }
+}

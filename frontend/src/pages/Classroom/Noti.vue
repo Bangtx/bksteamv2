@@ -1,0 +1,142 @@
+<template lang="pug">
+  .bg-gray-50.min-h-screen
+    header-bar
+    .flex.flex-col(class="md:flex-row")
+      menu-component(:is-admin="false")
+      #main.main-content.flex-1.py-20(class="md:pb-5")
+        .px-4.text-gray-700(class="md:px-8")
+          .px-4.text-gray-700(class="md:px-8")
+            .flex.gap-2.items-center.pb-2.text-xl.font-semibold.text-gray-600.mt-8
+              svg.h-6.w-6(xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2")
+                path(d="M12 14l9-5-9-5-9 5 9 5z")
+                path(d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z")
+                path(stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222")
+              div Tình hình học tập
+            .items-center.mt-4.gap-36(class="md:flex")
+              h1.py-2
+                | Tên lớp:
+                span {{ classroom.name }}
+              h1.py-2
+                | Sĩ số:
+                span {{ students.length }}
+            div
+              .w-full.overflow-auto.mt-8(style="max-height: 500px;")
+                table.w-full.whitespace-nowrap
+                  thead
+                    tr.text-xs.bg-white.font-semibold.tracking-wide.text-left.text-gray-500.uppercase.border-b
+                      th.px-4.py-3.px-6 Mã học sinh
+                      th.px-4.py-3.px-6 Tên học sinh
+                      th.px-4.py-3.px-6.text-center
+                      th.px-4.py-3.px-6.text-center Nhận xét giáo viên
+                  tbody.bg-white.divide-y
+                    tr.text-gray-700(v-for="student in students" :key="student.id")
+                      td.px-4.py-3.text-sm {{ student.id }}
+                      td.px-4.py-3.text-sm {{ student.name }}
+                      td.px-4.py-3.text-sm.text-center
+                      td.px-4.py-3.text-xs.text-center.flex.items-center.justify-center.gap-2
+                        button.bg-orange-400.w-14.text-white.py-1.px-2.rounded-full(
+                          @click="openNotiDialog(student, 'see')"
+                        ) Xem ({{ student.notification? student.notification.length : 0 }})
+                        button.bg-green-500.w-14.text-white.py-1.px-2.rounded-full(
+                          @click="openNotiDialog(student, 'add')"
+                        ) Nhập
+
+              button.bg-green-500.w-34.text-white.py-1.px-2.rounded-full.mt-5.input-all(
+                @click="openNotiDialog({}, 'add', true)"
+              ) Nhập cho tất cả
+
+    notification-dialog(
+      :value="isOpenNotiDialog"
+      :isAll="isAll"
+      :mode="modeOpen"
+      :classroom="classroom"
+      :student="studentSelected"
+      :students="students"
+      @on-close="isOpenNotiDialog = false"
+      @reload="getData()"
+    )
+
+</template>
+
+<script>
+import { defineComponent, ref, onMounted, getCurrentInstance } from 'vue'
+import { NotificationDialog, EditRollCallDialog, HeaderBar, MenuComponent } from '@/components'
+import { api } from '@/plugins'
+import { endpoints } from '@/utils'
+
+const Noti = defineComponent({
+  components: {
+    NotificationDialog, EditRollCallDialog, HeaderBar, MenuComponent
+  },
+  setup() {
+    const { $toast, $route } = getCurrentInstance().proxy
+    const isOpenNotiDialog = ref(false)
+    const studentSelected = ref({})
+    const modeOpen = ref('')
+    const isAll = ref(false)
+    const classroomID = $route.params.classroomId
+    const students = ref([])
+    const classroom = ref({})
+    const teacher = ref({})
+
+    const openNotiDialog = (student, mode, all = false) => {
+      studentSelected.value = student
+      modeOpen.value = mode
+      isAll.value = all
+      isOpenNotiDialog.value = true
+    }
+
+    const getData = async () => {
+      try {
+        const data = await Promise.all([
+          api.get(`${endpoints.NOTIFICATION}?class_room=${classroomID}`),
+          api.get(`${endpoints.CLASSROOM}${classroomID}`),
+          api.get(`${endpoints.STUDENT}?classroom=${classroomID}`),
+          api.get(`${endpoints.TEACHER}?classroom=${classroomID}`)
+        ])
+
+        const [{ data: notiData }, { data: ClassData }, { data: StuData }, { data: TeaData }] = data
+
+        classroom.value = ClassData
+        students.value = StuData
+        teacher.value = TeaData[0]
+
+        students.value = StuData.map((student) => {
+          return {
+            ...student,
+            notification: notiData.filter((noti) => {
+              return noti.student.id === student.id
+            })
+          }
+        })
+
+      } catch (e) {
+        $toast.error('Get data failed')
+      }
+    }
+
+    onMounted(async () => {
+      await getData()
+    })
+
+    return {
+      openNotiDialog,
+      isOpenNotiDialog,
+      modeOpen,
+      studentSelected,
+      isAll,
+      students,
+      getData,
+      classroom,
+      teacher
+    }
+  }
+})
+
+export default Noti
+</script>
+
+<style lang="sass">
+.input-all
+  margin-left: 77%
+</style>

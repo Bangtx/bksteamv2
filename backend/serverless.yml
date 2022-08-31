@@ -1,0 +1,136 @@
+service: jfga-api
+
+provider:
+  name: aws
+  runtime: python3.9
+  stage: ${opt:stage,'dev'}
+  region: ap-northeast-1
+  httpApi:
+    payload: '1.0'
+    authorizers:
+      CognitoJwtAuthorizer:
+        identitySource: $request.header.Authorization
+        issuerUrl: https://cognito-idp.ap-northeast-1.amazonaws.com/${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAUserPoolId}
+        audience:
+          - ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAUserPoolClientServerToServerClient}
+          - ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAUserPoolClientUserClient}
+  versionFunctions: false
+  apiGateway:
+    binaryMediaTypes:
+      - 'multipart/form-data' # Required to upload image correctly
+  iam:
+    role:
+      name: jfga-api-${opt:stage,'dev'}-role
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - 's3:ListBucket'
+          Resource:
+            Fn::Join:
+              - ''
+              - - 'arn:aws:s3:::'
+                - Ref: ServerlessDeploymentBucket
+        - Effect: 'Allow'
+          Action:
+            - 's3:PutObject'
+            - 's3:GetObject'
+            - 's3:ListBucket'
+            - 's3:DeleteObject'
+          Resource:
+            - ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAS3Arn}
+            - ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAS3Arn}/*
+      tags:
+        project: jfga
+  vpc:
+    securityGroupIds:
+      - ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGASecurityGroupLambda}
+    subnetIds:
+      - ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGASubnetA}
+      - ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGASubnetB}
+  environment:
+    WEB_URL: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAWebURL}
+    LANGUAGE: ja
+    POSTGRES_DB: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGADBInstanceDBName}
+    POSTGRES_HOST: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGADBInstanceEndpointAddress}
+    POSTGRES_USER: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGADBInstanceMasterUsername}
+    POSTGRES_PASSWORD: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGADBInstanceMasterUserPassword}
+    POSTGRES_PORT: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGADBInstanceEndpointPort}
+    S3_BUCKET_NAME: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAS3Bucket}
+    S3_REGION: ap-northeast-1
+    ACCESS_KEY_ID_FMI: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAAcessKeyIDFMI}
+    SECRET_ACCESS_KEY_FMI: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGASecretAccessKeyFMI}
+    SENDGRID_SERVER: smtp.sendgrid.net
+    SENDGRID_PORT: 465
+    SENDGRID_USERNAME: apikey
+    SENDGRID_PASSWORD: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGASendgridPassword}
+    SENDGRID_SENDER: no-reply@fmbiz.otani-shokai.net
+    ALWAYS_MAIL_TO: fmbiz@yopmail.com
+    ENDPOINT_PDF: https://invoice.opg-devel.otani.sg/pdf
+    FMI_REGION_PDF: ap-southeast-1
+    FMI_SERVICE_PDF: execute-api
+    WAIT_UNTIL: networkidle0
+    GG_FONT: https://fonts.googleapis.com/css?family=Noto+Sans+JP:100,300,400,500,700,900&display=swap&subset=japanese
+    ALWAYS_FAX_TO: 0999999999
+    FAXIMO_ENABLED: false
+    FAXIMO_TSI: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAFaximoTSI}
+    FAXIMO_RETRY: 3
+    FAXIMO_READDRESS: fmbiz@yopmail.com
+    FAXIMO_USERAGENT: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAFaximoUseragent}
+    FAXIMO_TOKEN: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAFaximoToken}
+    FAXIMO_SEND_URI: https://rest.faximo.jp/snd/v1/request.json
+
+package:
+  excludeDevDependencies: true
+  patterns:
+    - '!./**'
+    - main.py
+    - config/**
+    - core/**
+    - langs/**
+    - models/**
+    - schemas/**
+    - services/**
+    - tasks/**
+    - utils/**
+    - tmp/**
+plugins:
+  - serverless-python-requirements
+  - serverless-plugin-warmup
+#  - serverless-domain-manager
+custom:
+  pythonRequirements:
+    zip: true
+    slim: true
+  warmup:
+    default:
+      enabled: true
+      prewarm: true
+      concurrency: 3
+      events:
+        - schedule: "rate(15 minutes)"
+      vpc: false
+#  customDomain:
+#    domainName: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAAPIGatewayCustomDomain}
+#    apiType: http
+#    endpointType: regional
+#    basePath: ''
+#    stage: ${self:provider.stage}
+#    createRoute53Record: true
+#    certificateArn: ${cf.ap-northeast-1:jfga-stack-${self:provider.stage}.JFGAApiCertificateArn}
+functions:
+  api:
+    handler: main.handler
+    timeout: 29
+    ephemeralStorageSize: 1024
+    memorySize: 1024
+    package: { }
+    events:
+      - httpApi:
+          authorizer:
+            name: CognitoJwtAuthorizer
+          path: "*"
+    maximumEventAge: 21600 # 6 hours
+    maximumRetryAttempts: 0
+    warmup:
+      default:
+        enabled: true

@@ -1,0 +1,103 @@
+{
+  "common": {
+    "menu": "メニュー",
+    "logout": "ログアウト",
+    "settings": "設定",
+    "yes": "はい",
+    "no": "いいえ",
+    "OK": "OK",
+    "ok": "OK",
+    "search_for_items": "品目を検索",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "new": "新規",
+    "duplicate": "複製",
+    "copy": "コピー",
+    "reset": "リセット",
+    "update": "更新",
+    "save": "保存",
+    "close": "閉じる",
+    "edit": "編集",
+    "search": "検索",
+    "add": "追加",
+    "sort": "並び順変更",
+    "view": "詳細",
+    "confirm_delete": "削除してもよろしいですか？",
+    "confirm_delete_label": "削除を確認"
+  },
+  "home": {
+    "title": "ホーム"
+  },
+  "error_code": {
+    "duplicate_date": "Date is already existed",
+    "duplicate_name": "Name is already existed",
+    "msg_duplicate_name": "Name is already existed in {group} with the name {name}",
+    "duplicate_name_short": "Name short is already existed",
+    "msg_duplicate_name_short": "Name short is already existed in {group} with the name {name}",
+    "duplicate_code": "Code is already existed",
+    "msg_duplicate_code": "Code is already existed in {group} with the name {name}",
+    "duplicate_name_eng": "Name eng is already existed",
+    "msg_duplicate_name_eng": "Name eng is already existed in {group} with the name {name}"
+  },
+  "master": {
+    "title": "マスタ管理",
+    "code": "コード",
+    "yomigana": "よみがな",
+    "name_eng": "英語表記",
+    "name_short": "短縮表示名",
+    "quantity": "入数",
+    "boxes": "箱数",
+    "total_stems": "合計本数",
+    "remark": "備考",
+    "bundle_no": "バンドルNo",
+    "price": "単価",
+    "desired_price": "希望単価",
+    "total_amount": "合計金額",
+    "amount": "合計金額",
+    "buyer_info": "買参番号",
+    "stems": "合計本数",
+    "address_1": "住所1",
+    "address_2": "住所2",
+    "sort": "Sort",
+    "duplicate_title": "duplicate title",
+    "msg": {
+      "code_is_number": "Code is number",
+      "check_data_type": "Check data type",
+      "save_name_empty": "[名前]を入力してください。",
+      "save_tel_empty": "[電話番号]を入力してください。",
+      "get_data_failed": "データが取得できませんでした。",
+      "save_order_successful": "並び順を登録しました。",
+      "save_order_failed": "システムはエラーです。並び順を登録できませんでした。",
+      "create_successful": "マスタに追加しました。",
+      "create_failed": "システムはエラーです。マスタ登録できませんでした。",
+      "update_successful": "マスタを更新しました。",
+      "update_failed": "システムはエラーです。マスタを更新できませんでした。",
+      "merge_successful": "マスタを合成しました。",
+      "merge_failed": "マスタを合成できませんでした。",
+      "delete_successful": "マスタを削除しました。",
+      "delete_failed": "システムはエラーです。マスタを削除できませんでした。",
+      "name_already_exists": "同じ名称のマスタデータがすでに存在します。",
+      "date_already_exists": "同じ日のマスタデータがすでに存在します。",
+      "bundle_size_must_be_an_integer": "[バンドルサイズ]は、数値(小数不可)で入力してください。",
+      "please_enter_bundle_size": "[バンドルサイズ]を入力してください。",
+      "please_enter_box_type_price": "[梱包タイプの単価]を入力してください。",
+      "please_enter_yomi": "[よみがな]を入力してください。",
+      "please_enter_email": "[メール]を入力してください。"
+    },
+    "unit_master": {
+      "unit_group": {
+        "title": "単位区分",
+        "name": "単位区分名",
+        "edit": "単位区分を編集",
+        "add": "単位区分を追加"
+      },
+      "unit": {
+        "name": "単位名",
+        "title": "単位",
+        "edit": "単位を編集",
+        "add": "単位を追加",
+        "unit_group_empty": "Unit group empty"
+      }
+    }
+  }
+}
