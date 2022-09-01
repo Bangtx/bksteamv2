@@ -34,9 +34,9 @@ def import_student():
 
     students = list(map(lambda x: x[0], csv_reader))
 
-    # data = []
-    # for i in clas:
-    #     Classroom.create(name=i)
+    data = []
+    for i in clas:
+        Classroom.create(name=i)
 
     # for row in csv_reader:
     #     name = row[0]
@@ -55,14 +55,14 @@ def import_student():
     #         }
     #         Student.create(**student)
 
-    # teachers = [
-    #     {'name': 'Phạm Việt Hưng', 'phone': '0967528503', 'gender': 'Name'},
-    #     {'name': 'Nguyễn Thị Minh Tâm', 'phone': '0986303740', 'gender': 'Name'},
-    #     {'name': 'Nguyễn Trần Bảo Ngọc', 'phone': '0975942067', 'gender': 'Name'},
-    #     {'name': 'Đoàn Thị Mỹ Dung', 'phone': '0932202936', 'gender': 'Name'},
-    #     {'name': 'Rhonna Mae Clare Inot Maasin', 'phone': '0325578127', 'gender': 'Name'},
-    # ]
-    # for teacher in teachers:
-    #     teacher['password'] = 'password'
-    #
-    #     Teacher.create(**teacher)
+    teachers = [
+        {'name': 'Phạm Việt Hưng', 'phone': '0967528503', 'gender': 'Name'},
+        {'name': 'Nguyễn Thị Minh Tâm', 'phone': '0986303740', 'gender': 'Name'},
+        {'name': 'Nguyễn Trần Bảo Ngọc', 'phone': '0975942067', 'gender': 'Name'},
+        {'name': 'Đoàn Thị Mỹ Dung', 'phone': '0932202936', 'gender': 'Name'},
+        {'name': 'Rhonna Mae Clare Inot Maasin', 'phone': '0325578127', 'gender': 'Name'},
+    ]
+    for teacher in teachers:
+        teacher['password'] = 'password'
+
+        Teacher.create(**teacher)
