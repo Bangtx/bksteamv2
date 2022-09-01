@@ -34,35 +34,35 @@ def import_student():
 
     students = list(map(lambda x: x[0], csv_reader))
 
-    data = []
-    for i in clas:
-        Classroom.create(name=i)
+    # data = []
+    # for i in clas:
+    #     Classroom.create(name=i)
 
-    # for row in csv_reader:
-    #     name = row[0]
-    #     clas = row[2]
-    #     phone = row[5]
-    #     if phone == '' or phone is None:
-    #         continue
+    for row in csv_reader:
+        name = row[0]
+        clas = row[2]
+        phone = row[5]
+        if phone == '' or phone is None:
+            continue
+
+        if not name in student_name_exists:
+            student_name_exists.append(name)
+            student = {
+                'name': name,
+                'password': 'student',
+                'phone': '0' + phone,
+                'classrooms': list(map(lambda x: x['id'], list(filter(lambda x: x['name'] == clas, class_exists))))
+            }
+            Student.create(**student)
+
+    # teachers = [
+    #     {'name': 'Phạm Việt Hưng', 'phone': '0967528503', 'gender': 'Name'},
+    #     {'name': 'Nguyễn Thị Minh Tâm', 'phone': '0986303740', 'gender': 'Name'},
+    #     {'name': 'Nguyễn Trần Bảo Ngọc', 'phone': '0975942067', 'gender': 'Name'},
+    #     {'name': 'Đoàn Thị Mỹ Dung', 'phone': '0932202936', 'gender': 'Name'},
+    #     {'name': 'Rhonna Mae Clare Inot Maasin', 'phone': '0325578127', 'gender': 'Name'},
+    # ]
+    # for teacher in teachers:
+    #     teacher['password'] = 'password'
     #
-    #     if not name in student_name_exists:
-    #         student_name_exists.append(name)
-    #         student = {
-    #             'name': name,
-    #             'password': 'password',
-    #             'phone': '0' + phone,
-    #             'classrooms': list(map(lambda x: x['id'], list(filter(lambda x: x['name'] == clas, class_exists))))
-    #         }
-    #         Student.create(**student)
-
-    teachers = [
-        {'name': 'Phạm Việt Hưng', 'phone': '0967528503', 'gender': 'Name'},
-        {'name': 'Nguyễn Thị Minh Tâm', 'phone': '0986303740', 'gender': 'Name'},
-        {'name': 'Nguyễn Trần Bảo Ngọc', 'phone': '0975942067', 'gender': 'Name'},
-        {'name': 'Đoàn Thị Mỹ Dung', 'phone': '0932202936', 'gender': 'Name'},
-        {'name': 'Rhonna Mae Clare Inot Maasin', 'phone': '0325578127', 'gender': 'Name'},
-    ]
-    for teacher in teachers:
-        teacher['password'] = 'password'
-
-        Teacher.create(**teacher)
+    #     Teacher.create(**teacher)
