@@ -43,13 +43,15 @@ const AddContentDate = defineComponent({
   },
   components: { DialogContainer },
   setup(props, { emit }) {
-    const { $toast } = getCurrentInstance().proxy
+    const { $toast, $route } = getCurrentInstance().proxy
     const modal = ref(false)
+    const classroomID = $route.params.classroomId
     const date = ref(moment(new Date()).format('YYYY-MM-DD'))
 
     const create = async () => {
+      const body = { ...props.slide, classroom: classroomID }
       try {
-        await api.post(endpoints.SLIDE, props.slide)
+        await api.post(endpoints.SLIDE, body)
         emit('reload')
         emit('on-close')
         $toast.success('Save data successful')

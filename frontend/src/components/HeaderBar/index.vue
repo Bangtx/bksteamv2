@@ -31,6 +31,7 @@
 <script>
 import { defineComponent, getCurrentInstance } from 'vue'
 import { urlPath } from '@/utils'
+import {HOME} from "@/utils/urlPath";
 
 const HeaderBar = defineComponent({
   props: {
@@ -44,7 +45,7 @@ const HeaderBar = defineComponent({
     const { $router } = getCurrentInstance().proxy
     const member = JSON.parse(localStorage.getItem('token'))
     const goToHomePage = () => {
-      $router.push({ name: urlPath.START.name })
+      $router.push({ name: urlPath.HOME.name })
     }
 
     const logout = () => {
