@@ -45,8 +45,8 @@ const Home = defineComponent({
   },
   setup() {
     const { $router, $toast } = getCurrentInstance().proxy
-    const baseUrl = process.env.VUE_APP_WEB_URL_PRO
-    // const baseUrl = process.env.VUE_APP_WEB_URL
+    // const baseUrl = process.env.VUE_APP_WEB_URL_PRO
+    const baseUrl = process.env.VUE_APP_WEB_URL
     const classrooms = ref([])
 
     const member = JSON.parse(localStorage.getItem('token'))

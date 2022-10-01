@@ -55,7 +55,7 @@ const ClassroomDialog = defineComponent({
 
     const update = async () => {
       try {
-        await api.put(`${endpoints.CLASSROOM}`, classroomData.value)
+        await api.put(`${endpoints.CLASSROOM}${classroomData.value.id}`, classroomData.value)
         emit('re-load')
         emit('on-close')
         $toast.success('Save data successful')
