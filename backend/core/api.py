@@ -14,7 +14,8 @@ from core.endpoints import (
     self_learning,
     home_work_result,
     home_work_file,
-    home_work_file_result
+    home_work_file_result,
+    csv
 )
 
 
@@ -43,3 +44,4 @@ api_router.include_router(unit.router, prefix='/unit', tags=['unit'])
 api_router.include_router(slide.router, prefix='/slide', tags=['slide'])
 # api_router.include_router(file_result_student.router, prefix='/file_result_student', tags=['file_result_student'])
 api_router.include_router(self_learning.router, prefix='/self_learning', tags=['self_learning'])
+api_router.include_router(csv.router, prefix='/csv', tags=['csv'])

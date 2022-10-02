@@ -6,6 +6,7 @@
     @on-close="$emit('on-close')"
     @on-update="update"
     @on-create="create"
+    @on-remove="remove"
     v-model="value"
   )
     .container
@@ -124,6 +125,17 @@ const QuestionDialog = defineComponent({
       }
     }
 
+    const remove = async () => {
+      try {
+        await api.delete(`${endpoints.HOME_WORK}${questionData.value.id}`)
+        emit('re-load')
+        emit('on-close')
+        $toast.success('Save data successful')
+      } catch (e) {
+        $toast.error('Save data failed')
+      }
+    }
+
     const watchAudio = () => {
       window.open(questionData.value.audio)
     }
@@ -144,6 +156,7 @@ const QuestionDialog = defineComponent({
     return {
       update,
       create,
+      remove,
       questionData,
       watchAudio,
       dateModal

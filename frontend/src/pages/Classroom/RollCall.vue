@@ -213,6 +213,10 @@ const RollCall = defineComponent({
           absent_type: e.absent_type || null
         }
       })
+      if (rollCalls.value.filter(rc => rc.date === dateAddScore.value).length > 0) {
+        $toast.info('Đã điểm danh')
+        return
+      }
 
       saveRollCallAPI(query)
     }

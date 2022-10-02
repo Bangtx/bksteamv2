@@ -47,7 +47,6 @@ def update(roll_call: schemas.RollCallUpdate):
         date=roll_call.date,
         student=roll_call.student,
         teacher=roll_call.teacher,
-        absent_type=roll_call.absent_type
     )
 
     if roll_call_inserted:

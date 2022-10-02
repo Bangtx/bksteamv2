@@ -22,3 +22,9 @@ def create_home_work(home_work: schemas.HomeWorkCreate):
 @transaction
 def update_home_work(home_work: schemas.HomeWorkUpdate):
     return models.HomeWork.update_one(home_work.id, home_work.dict())
+
+
+@router.delete('/{id}')
+@transaction
+def delete_home_work(id: int):
+    return models.HomeWork.soft_delete(id)
