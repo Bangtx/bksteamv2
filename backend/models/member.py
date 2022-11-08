@@ -48,7 +48,10 @@ class Member(BaseModel):
         # print(classrooms)
         result = []
         for classroom in classrooms:
-            result.append(Classroom.get_one(classroom))
+            try:
+                result.append(Classroom.get_one(classroom))
+            except:
+                pass
 
         return result
 
