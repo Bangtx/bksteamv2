@@ -3,13 +3,23 @@ import pandas as pd
 from models.home_work_file import HomeWorkFile
 
 
-def to_csv_by_class(classrooms, students, roll_call):
+def to_csv_by_class(classrooms, students, roll_call, home_work_result, scores):
     header = ['', 'Lớp học', 'Họ và tên', 'Trình độ', 'Số buổi\nhọc trong tháng', 'Ngày', 'Tình trạng điểm danh',
               'Tình trạng làm bài tập về nhà', 'Kết quả kiểm tra đánh giá', 'Nhận Xét']
     dates = list(set(list(map(lambda x: x['date'], roll_call))))
     exel_rows = [header]
     for c_index, classroom in enumerate(classrooms):
         for s_index, student in enumerate(students):
+            home_work_result_by_student = list(
+                filter(
+                    lambda x: x['student'] == student['id'], home_work_result
+                )
+            )
+            scores_by_student = list(
+                filter(
+                    lambda x: x['student'] == student['id'], scores
+                )
+            )
             for d_index, date in enumerate(dates):
                 exel_row = ['', '', '', '', '', '', '', '', '', '']
 
@@ -37,12 +47,13 @@ def to_csv_by_class(classrooms, students, roll_call):
                 exel_row[6] = (
                     to_absent(roll_call_student_this_day[0]['absent_type']) if roll_call_student_this_day else None
                 )
-                home_work_file = HomeWorkFile.get_or_none(
-                    classroom=classroom['id'],
-                    date=date
-                )
-                if home_work_file:
-                    exel_row[7] = f"""{home_work_file.description if home_work_file.description else ''} {home_work_file.file_url if home_work_file.file_url else ''}"""
+                exel_rows[7] = f"{len(list(filter(lambda x: x['is_correct'], home_work_result_by_student)))}/{len(home_work_result_by_student)}"
+                # home_work_file = HomeWorkFile.get_or_none(
+                #     classroom=classroom['id'],
+                #     date=date
+                # )
+                # if home_work_file:
+                #     exel_row[7] = f"""{home_work_file.description if home_work_file.description else ''} {home_work_file.file_url if home_work_file.file_url else ''}"""
                 exel_rows.append(exel_row)
     # print(exel_rows)
     arr = np.asarray(exel_rows)
