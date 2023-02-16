@@ -12,3 +12,11 @@ export const replaceUrl = ({query, params}) => {
             console.log(e)
         })
 }
+
+export const readFile = (file) => {
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onloadend = () => resolve(reader.result)
+  })
+}

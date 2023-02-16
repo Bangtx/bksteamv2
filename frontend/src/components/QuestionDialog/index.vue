@@ -59,21 +59,21 @@
         v-col(cols="12" sm="6")
           v-checkbox(label="Trắc nghiệm" v-model="questionData.multi_choice")
         v-col(cols="12" sm="6")
-          v-text-field(label="Audio" v-model="questionData.audio" hide-details dense outlined)
+          v-file-input(label="Audio" v-model="questionData.audio" hide-details dense outlined)
+          //v-text-field(label="Audio" v-model="questionData.audio" hide-details dense outlined)
           i.watch(v-if="questionData.audio?.length > 0" @click="watchAudio()") xem ngay
         v-col.pa-0(cols="12")
           span Nội Dung
           vue-editor(v-model="questionData.question" )
-          v-radio-group(v-if="questionData.multi_choice" row v-model="questionData.answer" )
+          v-radio-group(v-if="questionData.multi_choice" row v-model="questionData.answer" hide-details)
             v-radio(:value="questionData.option_1" )
             v-text-field(v-model="questionData.option_1" )
             v-radio(:value="questionData.option_2" )
             v-text-field(v-model="questionData.option_2" )
             v-radio(:value="questionData.option_3" )
             v-text-field(v-model="questionData.option_3" )
-        v-col.pa-0(cols="12")
+        v-col.pa-0(cols="12" v-if="!questionData.multi_choice")
           v-text-field(
-            v-if="!questionData.multi_choice"
             label="Answer"
             v-model="questionData.answer"
             hide-details

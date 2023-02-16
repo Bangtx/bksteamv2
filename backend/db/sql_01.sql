@@ -257,3 +257,36 @@ CREATE TABLE self_learning
   CONSTRAINT pkey_self_learning PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS audio CASCADE;
+CREATE TABLE audio
+(
+  id bigserial NOT NULL,
+  url text,
+  path text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  created_by bigint,
+  modified_at timestamp with time zone,
+  modified_by bigint,
+  deleted_at timestamp with time zone,
+  deleted_by bigint,
+  active boolean DEFAULT TRUE,
+  CONSTRAINT pkey_audio PRIMARY KEY (id)
+);
+
+DROP TABLE IF EXISTS image CASCADE;
+CREATE TABLE image
+(
+  id bigserial NOT NULL,
+  url text,
+  path text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  created_by bigint,
+  modified_at timestamp with time zone,
+  modified_by bigint,
+  deleted_at timestamp with time zone,
+  deleted_by bigint,
+  active boolean DEFAULT TRUE,
+  CONSTRAINT pkey_image PRIMARY KEY (id)
+);
+
+
