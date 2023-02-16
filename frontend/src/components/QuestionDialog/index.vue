@@ -9,59 +9,80 @@
     @on-remove="remove"
     v-model="value"
   )
-    .container
-      v-dialog(
-        ref="startDialog"
-        persistent
-        width="90vw"
-        max-width="500px"
-        :return-value.sync="questionData.date"
-        v-model="dateModal"
-      )
-        template(v-slot:activator="{ on, attrs }")
-          v-text-field(
-            readonly
-            hide-details
-            v-bind="attrs"
-            v-on="on"
-            append-icon="mdi-calendar-range"
-            label="Từ ngày"
-            :value="questionData.date"
-            @click:append-outer="dateModal = true"
+    .pa-2
+      v-row
+        v-col(cols="12")
+        v-col(cols="12" sm="6")
+          v-dialog(
+            ref="startDialog"
+            persistent
+            width="90vw"
+            max-width="500px"
+            :return-value.sync="questionData.date"
+            v-model="dateModal"
           )
-        v-date-picker.title-color(
-          color="rough_black"
-          header-color="rough_black"
-          v-model="questionData.date"
-          full-width
-        )
-          v-spacer
-          v-btn.white--text(dark text color="light_red" @click="dateModal = false")
-            span cancel
-          v-btn.white--text(dark text color="rough_black" @click="$refs.startDialog.save(questionData.date), dateModal = false")
-            span ok
-      v-autocomplete(
-        clearable
-        item-text="title" item-value="id"
-        :items="units"
-        :label="'Unit'"
-        v-model="questionData.unit"
-      )
-      v-checkbox(label="Trắc nghiệm" v-model="questionData.multi_choice")
-      v-text-field(label="Audio" v-model="questionData.audio" )
-      i.watch(v-if="questionData.audio?.length > 0" @click="watchAudio()") xem ngay
-    span Nội Dung
-    vue-editor(v-model="questionData.question" )
-    v-radio-group(v-if="questionData.multi_choice" row v-model="questionData.answer" )
-      v-radio(:value="questionData.option_1" )
-      v-text-field(v-model="questionData.option_1" )
-      v-radio(:value="questionData.option_2" )
-      v-text-field(v-model="questionData.option_2" )
-      v-radio(:value="questionData.option_3" )
-      v-text-field(v-model="questionData.option_3" )
-    v-text-field(v-if="!questionData.multi_choice" label="Answer" v-model="questionData.answer" )
-    v-checkbox(label="Bắt buộc" v-model="questionData.have_to_do")
-      //vuetify-audio(v-if="questionData.audio?.length > 0" :file="questionData.audio")
+            template(v-slot:activator="{ on, attrs }")
+              v-text-field(
+                outlined
+                dense
+                readonly
+                hide-details
+                v-bind="attrs"
+                v-on="on"
+                append-icon="mdi-calendar-range"
+                label="Từ ngày"
+                :value="questionData.date"
+                @click:append-outer="dateModal = true"
+              )
+            v-date-picker.title-color(
+              color="rough_black"
+              header-color="rough_black"
+              v-model="questionData.date"
+              full-width
+            )
+              v-spacer
+              v-btn.white--text(dark text color="light_red" @click="dateModal = false")
+                span cancel
+              v-btn.white--text(dark text color="rough_black" @click="$refs.startDialog.save(questionData.date), dateModal = false")
+                span ok
+        v-col(cols="12" sm="6")
+          v-autocomplete(
+            clearable
+            item-text="title" item-value="id"
+            :items="units"
+            :label="'Unit'"
+            v-model="questionData.unit"
+            hide-details
+            dense
+            outlined
+          )
+        v-col(cols="12" sm="6")
+          v-checkbox(label="Trắc nghiệm" v-model="questionData.multi_choice")
+        v-col(cols="12" sm="6")
+          v-text-field(label="Audio" v-model="questionData.audio" hide-details dense outlined)
+          i.watch(v-if="questionData.audio?.length > 0" @click="watchAudio()") xem ngay
+        v-col.pa-0(cols="12")
+          span Nội Dung
+          vue-editor(v-model="questionData.question" )
+          v-radio-group(v-if="questionData.multi_choice" row v-model="questionData.answer" )
+            v-radio(:value="questionData.option_1" )
+            v-text-field(v-model="questionData.option_1" )
+            v-radio(:value="questionData.option_2" )
+            v-text-field(v-model="questionData.option_2" )
+            v-radio(:value="questionData.option_3" )
+            v-text-field(v-model="questionData.option_3" )
+        v-col.pa-0(cols="12")
+          v-text-field(
+            v-if="!questionData.multi_choice"
+            label="Answer"
+            v-model="questionData.answer"
+            hide-details
+            dense
+            outlined
+          )
+        v-col.pa-0(cols="12")
+          v-checkbox(label="Bắt buộc" v-model="questionData.have_to_do")
+          //vuetify-audio(v-if="questionData.audio?.length > 0" :file="questionData.audio")
 </template>
 
 <script>
