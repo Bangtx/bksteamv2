@@ -25,7 +25,13 @@ def create_home_work(home_work: schemas.HomeWorkCreate):
 @router.put('/')
 @transaction
 def update_home_work(home_work: schemas.HomeWorkUpdate):
-    return models.HomeWork.update_one(home_work.id, home_work.dict())
+    home_work = home_work.dict()
+    if home_work['audio'].find('http') == -1:
+        file = Audio.create(b64decode(home_work['audio'].split(',').pop()))
+        home_work['audio'] = file.id
+    else:
+        home_work.pop('audio', None)
+    return models.HomeWork.update_one(home_work['id'], home_work)
 
 
 @router.delete('/{id}')

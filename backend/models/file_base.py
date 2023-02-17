@@ -20,6 +20,6 @@ class FileBase(BaseModel):
         with open(path, 'wb+') as file_object:
             file_object.write(file)
 
-        url = f'{VUE_APP_API_URL}/{cls.DIR}/{path}'
-        print(url)
+        url = f'{VUE_APP_API_URL}/{cls.DIR}?path={path}'
+
         return super().create(url=url, path=path)

@@ -131,6 +131,7 @@ const QuestionDialog = defineComponent({
     const dateModal = ref(false)
     const classroomID = $route.params.classroomId
     const previewFile = computed(() => {
+      if (typeof questionData.value?.audio === 'string') return questionData.value?.audio
       return questionData.value?.audio ? URL.createObjectURL(questionData.value.audio) : null
     })
     const questionData = ref({
@@ -152,7 +153,7 @@ const QuestionDialog = defineComponent({
 
     const update = async () => {
       const body = {...questionData.value}
-      body.audio = await readFile(body.audio)
+      if (typeof questionData.value?.audio !== 'string') body.audio = await readFile(body.audio)
       try {
         await api.put(`${endpoints.HOME_WORK}`, body)
         emit('re-load')
