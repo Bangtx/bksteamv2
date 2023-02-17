@@ -160,7 +160,7 @@ CREATE TABLE home_work
   deadline date,
   classroom_id bigint,
   unit_id bigint,
-  audio text,
+  audio bigint,
   multi_choice bool default false, -- 0(multichoice) or 1
   question text,
   option_1 text,

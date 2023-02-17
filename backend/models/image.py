@@ -5,5 +5,6 @@ from peewee import (
 
 
 class Image(FileBase):
+    DIR = 'image'
     class Meta:
         db_table = 'image'

@@ -59,9 +59,16 @@
         v-col(cols="12" sm="6")
           v-checkbox(label="Trắc nghiệm" v-model="questionData.multi_choice")
         v-col(cols="12" sm="6")
-          v-file-input(label="Audio" v-model="questionData.audio" hide-details dense outlined)
-          //v-text-field(label="Audio" v-model="questionData.audio" hide-details dense outlined)
-          i.watch(v-if="questionData.audio?.length > 0" @click="watchAudio()") xem ngay
+          v-file-input(
+            label="Audio"
+            v-model="questionData.audio"
+            hide-details
+            dense
+            outlined
+            accept=".mp3,audio/*"
+          )
+        v-col(cols="12" v-if="questionData.audio")
+          vuetify-audio(v-if="questionData.audio" :file="previewFile")
         v-col.pa-0(cols="12")
           span Nội Dung
           vue-editor(v-model="questionData.question" )
@@ -86,13 +93,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, watch, getCurrentInstance } from 'vue'
+import { defineComponent, ref, watch, getCurrentInstance, computed } from 'vue'
 import VuetifyAudio from 'vuetify-audio/src/vuetifyaudio.vue'
 import { api } from '@/plugins'
-import { endpoints } from '@/utils'
+import { endpoints, readFile } from '@/utils'
 import DialogContainer from '../DialogContainer/index'
 import { QUESTION_INIT } from './index'
 import { VueEditor } from 'vue2-editor'
+import moment from "moment/moment";
 
 const QuestionDialog = defineComponent({
   props: {
@@ -120,13 +128,33 @@ const QuestionDialog = defineComponent({
   components: { DialogContainer, VuetifyAudio, VueEditor },
   setup(props, { emit }) {
     const { $toast, $route } = getCurrentInstance().proxy
-    const questionData = ref({})
     const dateModal = ref(false)
     const classroomID = $route.params.classroomId
+    const previewFile = computed(() => {
+      return questionData.value?.audio ? URL.createObjectURL(questionData.value.audio) : null
+    })
+    const questionData = ref({
+      multi_choice: false,
+      classroom: classroomID,
+      date: moment(new Date()).format('YYYY-MM-DD'),
+      audio: null,
+      have_to_do: false,
+      unit: null
+    })
+
+    const uploadFile = async () => {
+      // try {
+      //   await api.put(`${endpoints.AUDIO}`, questionData.value)
+      // } catch (e) {
+      //   $toast.error('Save data failed')
+      // }
+    }
 
     const update = async () => {
+      const body = {...questionData.value}
+      body.audio = await readFile(body.audio)
       try {
-        await api.put(`${endpoints.HOME_WORK}`, questionData.value)
+        await api.put(`${endpoints.HOME_WORK}`, body)
         emit('re-load')
         emit('on-close')
         $toast.success('Save data successful')
@@ -136,8 +164,10 @@ const QuestionDialog = defineComponent({
     }
 
     const create = async () => {
+      const body = {...questionData.value}
+      body.audio = await readFile(body.audio)
       try {
-        await api.post(`${endpoints.HOME_WORK}`, questionData.value)
+        await api.post(`${endpoints.HOME_WORK}`, body)
         emit('re-load')
         emit('on-close')
         $toast.success('Save data successful')
@@ -155,10 +185,6 @@ const QuestionDialog = defineComponent({
       } catch (e) {
         $toast.error('Save data failed')
       }
-    }
-
-    const watchAudio = () => {
-      window.open(questionData.value.audio)
     }
 
     const init = async () => {
@@ -179,8 +205,8 @@ const QuestionDialog = defineComponent({
       create,
       remove,
       questionData,
-      watchAudio,
-      dateModal
+      dateModal,
+      previewFile
     }
   }
 })

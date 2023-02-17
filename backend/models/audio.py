@@ -5,5 +5,7 @@ from peewee import (
 
 
 class Audio(FileBase):
+    DIR = 'audio'
+
     class Meta:
         db_table = 'audio'

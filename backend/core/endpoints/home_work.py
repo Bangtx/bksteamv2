@@ -3,6 +3,8 @@ import schemas.home_work as schemas
 import models.home_work as models
 from typing import List
 from utils.db import transaction
+from models.audio import Audio
+from base64 import b64decode
 
 router = APIRouter()
 
@@ -15,6 +17,8 @@ def get_home_work(classroom: int, date_from: str = None, date_to: str = None):
 @router.post('/')
 @transaction
 def create_home_work(home_work: schemas.HomeWorkCreate):
+    file = Audio.create(b64decode(home_work.audio.split(',').pop()))
+    home_work.audio = file.id
     return models.HomeWork.create(**home_work.dict())
 
 
