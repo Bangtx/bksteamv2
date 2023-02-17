@@ -29,6 +29,12 @@
                   item-key="name"
                   class="elevation-1"
                 )
+                  template(v-slot:item.actions='{ item }')
+                    v-icon.mr-2(small='' @click='editItem(item)')
+                      | mdi-pencil
+                    v-icon(small='' @click='deleteItem(item)')
+                      | mdi-delete
+
                 //table.w-full.whitespace-nowrap.rounded-lg.border(
                 //  v-if="member.type_member === 'teacher'"
                 //)
@@ -150,7 +156,7 @@ const RollCall = defineComponent({
         students.value.map(student => {
           return {text: student.name, value: String(student.id)}
         })
-      )
+      ).concat({text: 'actions', value: 'actions'})
     })
 
     const bodyTable = computed(() => {
