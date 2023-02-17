@@ -23,36 +23,42 @@
 
             .rounded-lg.overflow-auto.shadow-xs.mt-4(class="lg:px-10")
               .w-full.overflow-auto.rounded-lg(style="max-height: 600px; max-width: 1550px;")
-                table.w-full.whitespace-nowrap.rounded-lg.border(
-                  v-if="member.type_member === 'teacher'"
+                v-data-table(
+                  :headers="HeadersTable"
+                  :items="bodyTable"
+                  item-key="name"
+                  class="elevation-1"
                 )
-                  thead
-                    tr.text-md.font-semibold.text-left.text-gray-900.bg-gray-100.uppercase.border-b.border-gray-600.rounded-t-lg
-                      th.px-1.py-1.text-center.border.sticky.w-10.l-0 STT
-                      th.px-1.py-1.text-center.border.border.sticky.w-10.l-0 Mã HS
-                      th.px-1.py-1.border Họ tên
-                      th.px-1.py-1.border(v-for="rollCall in rollCalls" :key="rollCall.date")
-                        span {{ rollCall.date }}
-                      th.px-1.py-1.border(v-if="addCols" @click="editDate(dateAddScore)")
-                        span {{ dateAddScore }}
-
-                  tbody.bg-white
-                    tr.text-gray-700(v-for="(student, index) in students" :key="student.id")
-                      td.px-2.py-1.border.text-center {{ index + 1 }}
-                      td.px-2.py-1.border {{ student.id }}
-                      td.px-2.py-1.border {{ student.name }}
-                      td.px-2.py-1.border(
-                        v-for="rollCall in rollCalls" :key="rollCall.id"
-                        @dblclick="onEditRollCall(student.id, rollCall.date)"
-                      )
-                        span {{ toAbsentTypeName(rollCall.roll_call.find(e => e.student.id === student.id))}}
-                      td.border(v-if="addCols")
-                        v-autocomplete(
-                          :items="absentTypes"
-                          item-value="id"
-                          item-text="name"
-                          v-model="student.absent_type"
-                        )
+                //table.w-full.whitespace-nowrap.rounded-lg.border(
+                //  v-if="member.type_member === 'teacher'"
+                //)
+                //  thead
+                //    tr.text-md.font-semibold.text-left.text-gray-900.bg-gray-100.uppercase.border-b.border-gray-600.rounded-t-lg
+                //      th.px-1.py-1.text-center.border.sticky.w-10.l-0 STT
+                //      th.px-1.py-1.text-center.border.border.sticky.w-10.l-0 Mã HS
+                //      th.px-1.py-1.border Họ tên
+                //      th.px-1.py-1.border(v-for="rollCall in rollCalls" :key="rollCall.date")
+                //        span {{ rollCall.date }}
+                //      th.px-1.py-1.border(v-if="addCols" @click="editDate(dateAddScore)")
+                //        span {{ dateAddScore }}
+                //
+                //  tbody.bg-white
+                //    tr.text-gray-700(v-for="(student, index) in students" :key="student.id")
+                //      td.px-2.py-1.border.text-center {{ index + 1 }}
+                //      td.px-2.py-1.border {{ student.id }}
+                //      td.px-2.py-1.border {{ student.name }}
+                //      td.px-2.py-1.border(
+                //        v-for="rollCall in rollCalls" :key="rollCall.id"
+                //        @dblclick="onEditRollCall(student.id, rollCall.date)"
+                //      )
+                //        span {{ toAbsentTypeName(rollCall.roll_call.find(e => e.student.id === student.id))}}
+                //      td.border(v-if="addCols")
+                //        v-autocomplete(
+                //          :items="absentTypes"
+                //          item-value="id"
+                //          item-text="name"
+                //          v-model="student.absent_type"
+                //        )
 
               .w-full.overflow-auto.rounded-lg(style="max-height: 600px; max-width: 1550px;")
                 table.w-full.whitespace-nowrap.rounded-lg.border(
@@ -98,7 +104,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted, getCurrentInstance } from 'vue'
+import { defineComponent, ref, onMounted, getCurrentInstance, computed } from 'vue'
 import { api } from '@/plugins'
 import { endpoints } from '@/utils'
 import moment from 'moment'
@@ -121,7 +127,6 @@ const RollCall = defineComponent({
     ]
     const rollCalls = ref([])
     const addCols = ref(false)
-    const studentData = ref([])
     const alreadyRollCall = ref(false)
     const modal = ref(false)
     const date = ref(moment(new Date()).format('YYYY-MM-DD'))
@@ -139,6 +144,29 @@ const RollCall = defineComponent({
     const classroom = ref({})
     const students = ref([])
     const teacher = ref({})
+
+    const HeadersTable = computed(() => {
+      return [{text: 'date', value: 'date'}].concat(
+        students.value.map(student => {
+          return {text: student.name, value: String(student.id)}
+        })
+      )
+    })
+
+    const bodyTable = computed(() => {
+      return rollCalls.value.map(rollCall => {
+        const result = {}
+        students.value.map(student => student.id).forEach(id => {
+          result[id] = absentTypes.find(abs => {
+            return abs.id === rollCall.roll_call.find(e => e.student.id === id)?.absent_type
+          })?.name
+        })
+        return {
+          ...result,
+          date: rollCall.date
+        }
+      })
+    })
 
     const member = JSON.parse(localStorage.getItem('token'))
 
@@ -258,7 +286,6 @@ const RollCall = defineComponent({
       rollCalls,
       addCols,
       onClickSubmit,
-      studentData,
       alreadyRollCall,
       handleClickRollCall,
       member,
@@ -274,7 +301,9 @@ const RollCall = defineComponent({
       classroom,
       teacher,
       students,
-      toAbsentTypeName
+      toAbsentTypeName,
+      HeadersTable,
+      bodyTable
     }
   }
 })

@@ -143,14 +143,6 @@ const QuestionDialog = defineComponent({
       unit: null
     })
 
-    const uploadFile = async () => {
-      // try {
-      //   await api.put(`${endpoints.AUDIO}`, questionData.value)
-      // } catch (e) {
-      //   $toast.error('Save data failed')
-      // }
-    }
-
     const update = async () => {
       const body = {...questionData.value}
       if (typeof questionData.value?.audio !== 'string') body.audio = await readFile(body.audio)
