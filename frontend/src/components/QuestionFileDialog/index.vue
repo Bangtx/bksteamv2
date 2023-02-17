@@ -43,19 +43,26 @@
       :items="units"
       :label="'Unit'"
       v-model="questionFileData.unit"
+      hide-details
     )
-    v-text-field(label="Mô tả chung" v-model="questionFileData.description" )
-    v-text-field(label="Link driver (cấp quyền xem)" v-model="questionFileData.file_url" )
+    v-text-field(label="Mô tả chung" v-model="questionFileData.description" hide-details)
+    v-text-field(label="Link driver (cấp quyền xem)" v-model="questionFileData.file_url" hide-details)
     i.watch(v-if="questionFileData.file_url?.length > 0" @click="watchFile()") xem ngay
-    v-checkbox(label="Bắt buộc" v-model="questionFileData.have_to_do")
+    v-checkbox(label="Bắt buộc" v-model="questionFileData.have_to_do" hide-details)
     v-divider
-    v-checkbox(label="Bài Tập Riêng" :value="!questionFileData.is_global" @click="questionFileData.is_global = !questionFileData.is_global")
+    v-checkbox(
+      label="Bài Tập Riêng"
+      :value="!questionFileData.is_global"
+      @click="questionFileData.is_global = !questionFileData.is_global"
+      hide-details
+    )
     v-autocomplete(
       multiple
       item-text="name"
       item-value="id"
       :items="students"
       v-model="questionFileData.student_ids"
+      hide-details
     )
 
 </template>
