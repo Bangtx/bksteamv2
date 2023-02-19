@@ -32,6 +32,7 @@
 import { defineComponent, watch, ref, getCurrentInstance, computed } from 'vue'
 import { api } from '@/plugins'
 import { endpoints } from '@/utils'
+import moment from "moment/moment";
 
 const EditRollCallDialog = defineComponent({
   props: {
@@ -61,6 +62,10 @@ const EditRollCallDialog = defineComponent({
     },
     date: {
       type: String,
+      required: true
+    },
+    dates: {
+      type: Array,
       required: true
     }
   },
@@ -99,6 +104,10 @@ const EditRollCallDialog = defineComponent({
     }
 
     const onSave = async () => {
+      if (props.dates.indexOf(props.date) !== -1) {
+        $toast.info('Hom nay da diem danh')
+        return
+      }
       try {
         if (!props.isSelfLearning) await api.post(`${endpoints.ROLLCALL}`, getBody())
         else await api.put(`${endpoints.SELF_LEARNING}${props.data.id}`, getBodySelfLearning())

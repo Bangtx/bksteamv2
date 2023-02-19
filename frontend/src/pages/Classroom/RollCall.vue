@@ -77,6 +77,7 @@
       :classroom="classroom"
       :teacher="teacher"
       :date="date"
+      :dates="rollCalls.map(e => e.date)"
       @on-close="isShowEdit = false"
       @reload="getData"
     )
@@ -232,10 +233,6 @@ const RollCall = defineComponent({
     }
 
     const handleClickRollCall = () => {
-      if (rollCalls.value.find(e => e.date === moment(new Date()).format('YYYY-MM-DD'))) {
-        return
-      }
-
       rollCallProps.value = {}
       Object.keys(students.value).forEach(key => {
         rollCallProps.value[key] = null

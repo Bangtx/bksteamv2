@@ -56,19 +56,19 @@
                         span W:{{ scoreData.data.find(e => e.student.id === student.id)?.writing || '_' }} {{ ' ' }}
                       td.px-2.py-1.text-sm.border.text-center(v-if="addCols")
                         v-text-field.pa-0.ma-0(
-                          label="Nghe"
+                          label="Nghe" hide-details
                           type="number" v-model="student.score.listening"
                         )
                         v-text-field.pa-0.ma-0(
-                          label="Nói"
+                          label="Nói" hide-details
                           type="number" v-model="student.score.specking"
                         )
                         v-text-field.pa-0.ma-0(
-                          label="Đọc"
+                          label="Đọc" hide-details
                           type="number" v-model="student.score.reading"
                         )
                         v-text-field.pa-0.ma-0(
-                          label="Viết"
+                          label="Viết" hide-details
                           type="number" v-model="student.score.writing"
                         )
 
