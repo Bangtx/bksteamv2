@@ -12,7 +12,7 @@ class HomeWork(BaseModel):
     classroom = ForeignKeyField(Classroom, column_name='classroom_id')
     question = CharField()
     unit = ForeignKeyField(Unit, column_name='unit_id', null=True)
-    audio = CharField()
+    audio = ForeignKeyField(Audio, column_name='audio')
     multi_choice = BooleanField()
     option_1 = CharField()
     option_2 = CharField()
