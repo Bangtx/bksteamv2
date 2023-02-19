@@ -27,7 +27,7 @@ class HomeWork(BaseModel):
     @classmethod
     def get_list(cls, classroom, date_from=None, date_to=None):
         query = cls.select(
-            cls.id,
+            cls.id, cls.answer,
             cls.date, cls.classroom, cls.question, cls.multi_choice,
             Audio.url.alias('audio')
         ).join(

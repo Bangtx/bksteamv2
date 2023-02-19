@@ -44,6 +44,7 @@ class HomeWorkResult(BaseModel):
                 home_work=home_work_result['home_work']
             )
             if query_exists:
+                home_work_result.pop('id', None)
                 result.append(cls.update_one(query_exists.id, home_work_result))
             else:
                 result.append(cls.create(**home_work_result))
