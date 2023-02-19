@@ -1,20 +1,24 @@
 <template lang="pug">
-  v-dialog(:value="value" max-width="500" persistent)
+  v-dialog(:value="value" max-width="600" persistent)
     v-card
       v-card-title.text-h5.title-color.lighten-2
-        span Điểm danh
+        span Điểm danh {{ date }}
         v-spacer
         v-btn(icon @click="$emit('on-close')")
           v-icon mdi-close
       v-card-text
-        v-text-field(readonly :value="data.date")
-        v-autocomplete(
-          label="Diem danh"
-          :items="absentTypes"
-          item-value="id"
-          item-text="name"
-          v-model="data.absent_type"
-        )
+        v-row
+          v-col(cols="12" sm="6" v-for="student in students" )
+            span {{student.name}}
+            v-autocomplete(
+              :items="absentTypes"
+              item-value="name"
+              item-text="name"
+              hide-details
+              v-model="data[String(student.id)]"
+            )
+
+        //v-text-field(readonly :value="data.date")
       v-card-actions
         v-btn.relative-btn(
           :large="!$vuetify.breakpoint.xsOnly"
@@ -25,7 +29,7 @@
 </template>
 
 <script>
-import { defineComponent, watch, ref, getCurrentInstance } from 'vue'
+import { defineComponent, watch, ref, getCurrentInstance, computed } from 'vue'
 import { api } from '@/plugins'
 import { endpoints } from '@/utils'
 
@@ -43,11 +47,25 @@ const EditRollCallDialog = defineComponent({
       type: Boolean,
       required: false,
       default: false
+    },
+    students: {
+      default: () => []
+    },
+    classroom: {
+      type: Object,
+      required: true
+    },
+    teacher: {
+      type: Object,
+      required: true
+    },
+    date: {
+      type: String,
+      required: true
     }
   },
   setup(props, { emit }) {
     const { $toast } = getCurrentInstance().proxy
-    const items = ref([])
     const itemSelected = ref(0)
 
     const absentTypes = [
@@ -68,9 +86,21 @@ const EditRollCallDialog = defineComponent({
       }
     }
 
+    const getBody = () => {
+      const result = {}
+      Object.keys(props.data).forEach((key) => {
+        if (props.data[key] === 'Đúng giờ') result[key] = 1
+        if (props.data[key] === 'Nghỉ có phép') result[key] = 2
+        if (props.data[key] === 'Nghỉ không phép') result[key] = 3
+        if (props.data[key] === 'Muộn có phép') result[key] = 4
+        if (props.data[key] === 'Muộn không phép') result[key] = 5
+      })
+      return {date: props.date, payload: result, classroom: props.classroom.id, teacher: props.teacher.id}
+    }
+
     const onSave = async () => {
       try {
-        if (!props.isSelfLearning) await api.put(`${endpoints.ROLLCALL}`, props.data)
+        if (!props.isSelfLearning) await api.post(`${endpoints.ROLLCALL}`, getBody())
         else await api.put(`${endpoints.SELF_LEARNING}${props.data.id}`, getBodySelfLearning())
         emit('reload')
         emit('on-close')
@@ -82,7 +112,6 @@ const EditRollCallDialog = defineComponent({
 
     return {
       onSave,
-      items,
       itemSelected,
       absentTypes
     }

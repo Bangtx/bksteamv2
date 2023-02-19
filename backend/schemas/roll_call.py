@@ -14,9 +14,8 @@ class RollCall(RollCallBase):
     pass
 
 
-class RollCallCreate(RollCallBase):
-    pass
-
-
-class RollCallUpdate(RollCallBase):
-    pass
+class RollCallCreate(Schema):
+    date: date
+    payload: dict
+    classroom: int
+    teacher: int

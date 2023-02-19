@@ -19,11 +19,12 @@
               v-btn(
                 v-if="member.type_member === 'teacher'"
                 @click="handleClickRollCall()"
-              ) {{ addCols ? 'Hủy Điểm danh' : 'Điểm danh'}}
+              ) {{ 'Điểm danh'}}
 
             .rounded-lg.overflow-auto.shadow-xs.mt-4(class="lg:px-10")
               .w-full.overflow-auto.rounded-lg(style="max-height: 600px; max-width: 1550px;")
                 v-data-table(
+                  v-if="member.type_member === 'teacher'"
                   :headers="HeadersTable"
                   :items="bodyTable"
                   item-key="name"
@@ -34,37 +35,6 @@
                       | mdi-pencil
                     v-icon(small='' @click='deleteItem(item)')
                       | mdi-delete
-
-                //table.w-full.whitespace-nowrap.rounded-lg.border(
-                //  v-if="member.type_member === 'teacher'"
-                //)
-                //  thead
-                //    tr.text-md.font-semibold.text-left.text-gray-900.bg-gray-100.uppercase.border-b.border-gray-600.rounded-t-lg
-                //      th.px-1.py-1.text-center.border.sticky.w-10.l-0 STT
-                //      th.px-1.py-1.text-center.border.border.sticky.w-10.l-0 Mã HS
-                //      th.px-1.py-1.border Họ tên
-                //      th.px-1.py-1.border(v-for="rollCall in rollCalls" :key="rollCall.date")
-                //        span {{ rollCall.date }}
-                //      th.px-1.py-1.border(v-if="addCols" @click="editDate(dateAddScore)")
-                //        span {{ dateAddScore }}
-                //
-                //  tbody.bg-white
-                //    tr.text-gray-700(v-for="(student, index) in students" :key="student.id")
-                //      td.px-2.py-1.border.text-center {{ index + 1 }}
-                //      td.px-2.py-1.border {{ student.id }}
-                //      td.px-2.py-1.border {{ student.name }}
-                //      td.px-2.py-1.border(
-                //        v-for="rollCall in rollCalls" :key="rollCall.id"
-                //        @dblclick="onEditRollCall(student.id, rollCall.date)"
-                //      )
-                //        span {{ toAbsentTypeName(rollCall.roll_call.find(e => e.student.id === student.id))}}
-                //      td.border(v-if="addCols")
-                //        v-autocomplete(
-                //          :items="absentTypes"
-                //          item-value="id"
-                //          item-text="name"
-                //          v-model="student.absent_type"
-                //        )
 
               .w-full.overflow-auto.rounded-lg(style="max-height: 600px; max-width: 1550px;")
                 table.w-full.whitespace-nowrap.rounded-lg.border(
@@ -83,7 +53,7 @@
                       td.px-2.py-1.border {{ member.name }}
                       td.px-2.py-1.border {{ toAbsentTypeName(roll.roll_call[0]) }}
 
-            v-btn(v-if="addCols" style="margin-left: 77%" @click="onClickSubmit") submit
+            //v-btn(v-if="addCols" style="margin-left: 77%" @click="onClickSubmit") submit
 
     v-dialog.title-color(
         ref="dialog"
@@ -103,6 +73,10 @@
       :value="isShowEdit"
       :data="rollCallProps"
       :absent-types="absentTypes"
+      :students="students"
+      :classroom="classroom"
+      :teacher="teacher"
+      :date="date"
       @on-close="isShowEdit = false"
       @reload="getData"
     )
@@ -132,7 +106,6 @@ const RollCall = defineComponent({
       {id: 5, name: 'Muộn không phép'}
     ]
     const rollCalls = ref([])
-    const addCols = ref(false)
     const alreadyRollCall = ref(false)
     const modal = ref(false)
     const date = ref(moment(new Date()).format('YYYY-MM-DD'))
@@ -140,7 +113,6 @@ const RollCall = defineComponent({
     const dateAddScore = ref(moment(new Date()).format('YYYY-MM-DD'))
     const isShowEdit = ref(false)
     const rollCallProps = ref({
-      student: null,
       teacher: null,
       date: null,
       absent_type: null,
@@ -211,20 +183,14 @@ const RollCall = defineComponent({
       }
     }
 
-    const onEditRollCall = (studentId, rollCallDate) => {
-      rollCallProps.value = {
-        student: studentId,
-        teacher: teacher.value.id,
-        date: rollCallDate,
-        absent_type: null,
-        classroom: classroom.value.id
-      }
+    const editItem = (row) => {
+      rollCallProps.value = row
+      date.value = row.date
       isShowEdit.value = true
     }
 
     const reload = async () => {
       await getData()
-      addCols.value = false
     }
 
     const saveRollCallAPI = async (query) => {
@@ -266,7 +232,16 @@ const RollCall = defineComponent({
     }
 
     const handleClickRollCall = () => {
-      addCols.value = !addCols.value
+      if (rollCalls.value.find(e => e.date === moment(new Date()).format('YYYY-MM-DD'))) {
+        return
+      }
+
+      rollCallProps.value = {}
+      Object.keys(students.value).forEach(key => {
+        rollCallProps.value[key] = null
+      })
+      date.value = moment(new Date()).format('YYYY-MM-DD')
+      isShowEdit.value = true
     }
 
     const toAbsentTypeName = (absentType) => {
@@ -290,7 +265,6 @@ const RollCall = defineComponent({
     return {
       absentTypes,
       rollCalls,
-      addCols,
       onClickSubmit,
       alreadyRollCall,
       handleClickRollCall,
@@ -300,7 +274,6 @@ const RollCall = defineComponent({
       savaDate,
       dateAddScore,
       editDate,
-      onEditRollCall,
       isShowEdit,
       rollCallProps,
       getData,
@@ -309,7 +282,8 @@ const RollCall = defineComponent({
       students,
       toAbsentTypeName,
       HeadersTable,
-      bodyTable
+      bodyTable,
+      editItem
     }
   }
 })
