@@ -157,9 +157,8 @@ const QuestionDialog = defineComponent({
     }
 
     const create = async () => {
-      console.log(questionData.value)
       const body = {...questionData.value}
-      // body.audio = body?.audio || await readFile(body.audio)
+      body.audio = body?.audio ? await readFile(body.audio) : null
       try {
         await api.post(`${endpoints.HOME_WORK}`, body)
         emit('re-load')
