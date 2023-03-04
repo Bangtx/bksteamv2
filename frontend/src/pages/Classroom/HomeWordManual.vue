@@ -31,6 +31,10 @@
                 v-list-item(@click="openQuestionDialog('edit', homeWork)" :style="homeWork.have_to_do ? 'background-color: #c5ffc5': ''")
                   h3 {{ index + 1 }}
                   div.ml-4(v-html="homeWork.question")
+                  v-spacer
+                  div.ml-4
+                    audio(v-if="homeWork.audio" controls)
+                      source(:src="homeWork.audio")
                 v-divider
 
     question-dialog(
