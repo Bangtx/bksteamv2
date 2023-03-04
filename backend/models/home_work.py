@@ -31,7 +31,7 @@ class HomeWork(BaseModel):
             cls.date, cls.classroom, cls.question, cls.multi_choice,
             Audio.url.alias('audio')
         ).join(
-            Audio, on=Audio.id == cls.audio
+            Audio, JOIN.LEFT_OUTER, on=Audio.id == cls.audio
         ).where(cls.active, cls.classroom == classroom).dicts().order_by(cls.id)
         if date_to:
             query = query.where(cls.date <= date_to)

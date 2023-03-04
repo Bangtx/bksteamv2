@@ -116,8 +116,6 @@ const HomeWorkManual = defineComponent({
       if (homeWork) curQuestion.value = homeWork
       isOpenAddQuestionDialog.value = true
       isAdd.value = mode === 'add'
-      console.log(homeWork)
-      console.log(curQuestion.value)
     }
 
     onMounted(async () => {

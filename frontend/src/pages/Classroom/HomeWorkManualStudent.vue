@@ -35,7 +35,8 @@
                   template(v-slot:activator='')
                     v-list-item-content
                       v-list-item-title(v-html="homeWork.question")
-                      vuetify-audio(v-if="homeWork.audio" :file="homeWork.audio")
+                      audio(v-if="homeWork.audio" controls)
+                        source(:src="homeWork.audio")
                   v-list-item
                     div(v-if="homeWork.multi_choice")
                       v-radio-group(row v-model="homeWork.answer_student")
@@ -61,11 +62,10 @@ import { api } from '@/plugins'
 import { endpoints } from '@/utils'
 import { firstday, lastday } from './index'
 import moment from "moment";
-import VuetifyAudio from 'vuetify-audio/src/vuetifyaudio.vue'
 
 const HomeWorkManualStudent = defineComponent({
   components: {
-    NotificationDialog, EditRollCallDialog, HeaderBar, MenuComponent, QuestionDialog, DateRange, VuetifyAudio
+    NotificationDialog, EditRollCallDialog, HeaderBar, MenuComponent, QuestionDialog, DateRange
   },
   setup() {
     const { $toast, $route } = getCurrentInstance().proxy
